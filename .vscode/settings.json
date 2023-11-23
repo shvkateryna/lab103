@@ -1,0 +1,37 @@
+{
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.compile.nullAnalysis.mode": "automatic",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "pofig",
+            "database": "${workspaceFolder:lab103}/my_database.db"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "pofig",
+            "database": "${workspaceFolder:lab103}/my_database.db"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "pofig",
+            "database": "${workspaceFolder:lab103}/my_database.db"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "pofig",
+            "database": "${workspaceFolder:lab103}/my_database.db"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "pofig",
+            "database": "${workspaceFolder:lab103}/my_database.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
