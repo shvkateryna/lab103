@@ -31,6 +31,24 @@
             "driver": "SQLite",
             "name": "pofig",
             "database": "${workspaceFolder:lab103}/my_database.db"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "my_database2",
+            "database": "my_database2"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "database",
+            "name": "database"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "database",
+            "database": "database.db"
         }
     ],
     "sqltools.useNodeRuntime": true

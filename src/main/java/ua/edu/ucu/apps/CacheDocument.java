@@ -5,15 +5,20 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import lombok.AllArgsConstructor;
 
 import java.sql.ResultSet;
 
-@AllArgsConstructor
+
 public class CacheDocument {
 
+    private Document document;
+
+    public CacheDocument(Document document) {
+        this.document = document;
+    }
+
     private Connection connect() {
-        String url = "jdbc:sqlite:my_database.db";
+        String url = "jdbc:sqlite:database.db";
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(url);
@@ -24,28 +29,29 @@ public class CacheDocument {
     }
 
     public boolean recordExists(String path) {
-        String sql = "SELECT count(*) FROM your table WHERE path = ?";
+        String sql = "SELECT count(*) as count FROM documents WHERE path = ?";
         try (Connection conn = this.connect();
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, path);
             ResultSet rs = pstmt.executeQuery();
-            return rs.getInt(1) > 0;
+            return rs.getInt("count") > 0;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            handleSQLException(e);
         }
         return false;
     }
 
     public void injectText(String text, String path) {
-        String sql = "INSERT INTO your_table SET your_column = ? WHERE path = ?";
+        String sql = "INSERT INTO documents (path, document) VALUES (?, ?)";
         try (Connection conn = this.connect();
-            PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, path);
-                pstmt.setString(2, text);
-                pstmt.executeUpdate();
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, path);
+            pstmt.setString(2, text);
+            pstmt.executeUpdate();
+            System.out.println("Record inserted successfully");
+        } catch (SQLException e) {
+            handleSQLException(e);
+        }
     }
     
     private static void handleSQLException(SQLException e) {
@@ -68,14 +74,16 @@ public class CacheDocument {
     }
 
     public static void main(String[] args) {
-        CacheDocument app = new CacheDocument();
+        CacheDocument app = new CacheDocument(new SmartDocument("gs://cv-examples/wiki.png"));
         app.createTable();
-        String path = "my_database.db";
+        String path = "database.db";
         if (app.recordExists(path)) {
             app.injectText("This record exists", path);
             System.out.println("Record updated successfully");
         } else {
+            String text = app.document.parse();
             System.out.println("Record not found");
+            app.injectText(text, path);
         }
     }
 }
