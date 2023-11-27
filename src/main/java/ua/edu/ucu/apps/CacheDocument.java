@@ -4,8 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import lombok.AllArgsConstructor;
+
 import java.sql.ResultSet;
 
+@AllArgsConstructor
 public class CacheDocument {
 
     private Connection connect() {
@@ -43,12 +47,32 @@ public class CacheDocument {
                 System.out.println(e.getMessage());
             }
     }
+    
+    private static void handleSQLException(SQLException e) {
+        System.err.println("SQL Exception: " + e.getMessage());
+    }
+
+    public void createTable() {
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS documents ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "path TEXT NOT NULL,"
+                + "document TEXT NOT NULL);";
+
+        try (Connection conn = this.connect();
+             PreparedStatement preparedStatement = conn.prepareStatement(createTableSQL)) {
+            preparedStatement.executeUpdate();
+            System.out.println("Database created");
+        } catch (SQLException e) {
+            handleSQLException(e);
+        }
+    }
 
     public static void main(String[] args) {
         CacheDocument app = new CacheDocument();
+        app.createTable();
         String path = "my_database.db";
         if (app.recordExists(path)) {
-            app.injectText("Your text here", path);
+            app.injectText("This record exists", path);
             System.out.println("Record updated successfully");
         } else {
             System.out.println("Record not found");
